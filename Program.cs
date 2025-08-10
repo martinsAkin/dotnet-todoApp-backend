@@ -7,8 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 //load .env file
 Env.Load();
 
-var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
-builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
+// var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
+// builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
+
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // Add DB Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
