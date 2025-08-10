@@ -14,7 +14,7 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 
 // Add DB Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString)
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
 // ✅ Add CORS services
