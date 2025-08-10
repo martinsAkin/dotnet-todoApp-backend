@@ -14,7 +14,7 @@ namespace todoApp.Data
 
 
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
+            string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
             if (string.IsNullOrEmpty(connectionString))
             {
