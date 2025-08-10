@@ -1,43 +1,36 @@
 using Microsoft.EntityFrameworkCore;
 using todoApp.Data;
-using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//load .env file
-Env.Load();
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
-// builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("No database connection string found in appsettings.json");
+}
 
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-// Add DB Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+    options.UseNpgsql(connectionString)
 );
 
 // ✅ Add CORS services
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
-        policy.WithOrigins("http://localhost:5173") // Frontend origin
+        policy.WithOrigins("http://localhost:5173")
               .AllowAnyHeader()
               .AllowAnyMethod()
     );
 });
 
-// Add controllers
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// ✅ Use CORS middleware before routing
 app.UseCors("AllowFrontend");
-
 app.UseHttpsRedirection();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
